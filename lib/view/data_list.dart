@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sale_manager/model/data_model.dart';
@@ -16,10 +14,12 @@ class _DataList extends State<DataList> {
   List<DataModel> dataList = List<DataModel>.empty();
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     // データリストの取得
-    dataList = await DataModel.getData();
+    Future(() async {
+      dataList = await DataModel.getData();
+    });
   }
 
   int id = 0;
