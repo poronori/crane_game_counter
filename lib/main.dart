@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sale_manager/model/data_model.dart';
 import 'package:sale_manager/view/add_item_page.dart';
 import 'package:sale_manager/view/data_list.dart';
 import 'package:sqflite/sqflite.dart';
@@ -34,8 +35,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  void _incrementCounter() {
-    setState(() {
+  List<DataModel> dataList = List<DataModel>.empty();
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future(() async {
+      dataList = await DataModel.getData();
     });
   }
 
@@ -45,10 +52,10 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: const DataList(),
+      body: DataList(dataList: dataList),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: () async {
+          var result = await showModalBottomSheet(
             context: context,
             isScrollControlled: true,
             shape: const RoundedRectangleBorder(
@@ -56,6 +63,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ), 
             builder: (context) => const AddItemPage(),
           );
+          if (result == true) {
+            dataList = await DataModel.getData();
+            setState(() {});
+          }
         },
         child: const Icon(Icons.add),
       ), 

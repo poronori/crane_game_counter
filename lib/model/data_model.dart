@@ -2,11 +2,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DataModel {
-  final int id;
+  final int? id;
   final String text;
 
   DataModel({
-    required this.id,
+    this.id,
     required this.text
   });
 
