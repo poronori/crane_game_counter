@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../model/data_model.dart';
+
 class AddItemPage extends StatefulWidget {
   const AddItemPage({Key? key}) : super(key: key);
 
@@ -101,8 +103,13 @@ class _AddItemPageState extends State<AddItemPage> {
                               ),
                               labelText: 'テキスト',
                             ),
-                            onSaved: (value) {
+                            onSaved: (value) async {
                               text = value!;
+                              DataModel data = DataModel(
+                                text: value,
+                                datetime: DateTime.now.toString(),
+                              );
+                              await DataModel.insertData(data);
                             }
                           ),
                           // 追加ボタン
@@ -130,7 +137,5 @@ class _AddItemPageState extends State<AddItemPage> {
 
   void _saved() {
     _formKey.currentState!.save();
-
-    
   }
 }

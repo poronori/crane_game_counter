@@ -4,16 +4,19 @@ import 'package:path/path.dart';
 class DataModel {
   final int? id;
   final String text;
+  final String datetime;
 
   DataModel({
     this.id,
-    required this.text
+    required this.text,
+    required this.datetime
   });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'text': text,
+      'datetime': datetime,
     };
   }
 
@@ -25,7 +28,7 @@ class DataModel {
       onCreate: (db, version) {
         return db.execute(
           // テーブル作成
-          "CREATE TABLE sales(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT)",
+          "CREATE TABLE sales(id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, datetime TEXT)",
         );
       },
       version: 1,
@@ -52,6 +55,7 @@ class DataModel {
       return DataModel(
         id: maps[i]['id'],
         text: maps[i]['text'],
+        datetime: maps[i]['datetime'],
       );
     });
   }

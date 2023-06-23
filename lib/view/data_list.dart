@@ -15,6 +15,7 @@ class _DataList extends State<DataList> {
 
   int id = 0;
   String text = '';
+  String datetime = '';
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +25,13 @@ class _DataList extends State<DataList> {
         padding: const EdgeInsets.all(5),
         itemCount: widget.dataList.length,
         itemBuilder: (context, index) {
-          final _data = widget.dataList[index];
+          final data = widget.dataList[index];
 
-          id = _data.id!;
-          text = _data.text;
+          id = data.id!;
+          text = data.text;
+          datetime = data.datetime;
 
-          final Widget _listItem = Dismissible(
+          final Widget listItem = Dismissible(
             key: Key(id.toString()),
             onDismissed: (direction) {
               DataModel.deleteData(id);
@@ -38,10 +40,11 @@ class _DataList extends State<DataList> {
               child: ListTile(
                 leading: Text(id.toString()),
                 title: Text(text),
+                subtitle: Text(datetime),
               ),
             ),
           );
-          return _listItem;
+          return listItem;
         },
       ),
     );
