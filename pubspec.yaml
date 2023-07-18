@@ -41,6 +41,8 @@ dev_dependencies:
   sqflite:
   path:
   scrollable_positioned_list: ^0.2.3
+  firebase_core: ^1.20.1
+  cloud_firestore: ^3.4.4
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
