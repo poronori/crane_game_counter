@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../model/constants.dart';
 import '../model/data_model_share.dart';
 
 class DataListShare extends StatefulWidget {
-  final List<DataModelShare> dataList;
 
-  const DataListShare({Key? key, required this.dataList}) : super(key: key);
+  const DataListShare({Key? key}) : super(key: key);
 
   @override
   State<DataListShare> createState() => _DataListShare();
@@ -19,7 +19,7 @@ class _DataListShare extends State<DataListShare> {
 
   // DBの監視用ストリーム
   final Stream<QuerySnapshot> _userStream =
-      FirebaseFirestore.instance.collection('test_collection').snapshots();
+      FirebaseFirestore.instance.collection(Const.collectionName).snapshots();
 
   int id = 0;
   String text = '';
@@ -41,23 +41,26 @@ class _DataListShare extends State<DataListShare> {
           return Column(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-              List<dynamic> person = data['person'];
+              List<dynamic> person = data['dataList'];
               return ListView.builder(
                 itemBuilder: (BuildContext context, int index) {
+                  /*
                   if (index == 0) {
                     return Text(data['dateTime']);
                   }
+                  */
                   return Dismissible(
                     key: Key(person.toString()),
                     onDismissed: (DismissDirection direction) {
                       setState(() {
                         person.removeAt(index);
-                        deleteData(person);
+                        deleteData('2023-07-19', person);
                       });
                     },
                     child: ListTile(
-                      title: Text(person[index]['age']),
-                      subtitle: Text(person[index]['name']),
+                      title: Text(person[index]['name']),
+                      subtitle: Text(person[index]['count']),
+                      leading: Text(person[index]['store'])
                     ),
                   );
                 },
@@ -71,20 +74,20 @@ class _DataListShare extends State<DataListShare> {
 
   Future getDataList(String date) async {
     final document = await FirebaseFirestore.instance
-        .collection('test_collection')
-        .doc('testDoc')
+        .collection(Const.collectionName)
+        .doc(date)
         .get();
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    List<dynamic> person = data['person'];
+    List<dynamic> person = data['dataList'];
 
     return person;
   }
 
-  deleteData(List<dynamic> person) {
-    DataModelShare updateData = DataModelShare("2022-08-18", person);
+  deleteData(String date, List<dynamic> person) {
+    DataModelShare updateData = DataModelShare(date, person);
     FirebaseFirestore.instance
-        .collection('test_collection')
-        .doc('testDoc')
+        .collection(Const.collectionName)
+        .doc(date)
         .update(updateData.updateToJson());
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:sale_manager/model/data_model.dart';
-import 'package:sale_manager/view/add_item_page.dart';
-import 'package:sale_manager/view/data_list.dart';
+import 'package:sale_manager/view/add_item_page_share.dart';
+import 'package:sale_manager/view/data_list_share.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -16,11 +19,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'タイトル',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Crane Game Counter'),
     );
   }
 }
@@ -52,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: DataList(dataList: dataList),
+      body: DataListShare(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result = await showModalBottomSheet(
@@ -61,12 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
             ), 
-            builder: (context) => const AddItemPage(),
+            builder: (context) => const AddItemPageShare(),
           );
+          /*
           if (result == true) {
             dataList = await DataModel.getData();
             setState(() {});
           }
+          */
         },
         child: const Icon(Icons.add),
       ), 
