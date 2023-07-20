@@ -11,7 +11,6 @@ prise_collection - {datetime} - datetime
 */
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'dart:convert' as convert;
 import '../model/constants.dart';
 // DBに送る用
 class DataModelShare {
@@ -70,8 +69,8 @@ class UnitData {
     // その日のデータが存在していればドキュメントを更新
     if (snapshot.exists) {
       Map<String, dynamic> map = snapshot.data() as Map<String, dynamic>;
-      List<UnitData> dataList = map['dataList'];
-      dataList.add(this);
+      List<dynamic> dataList = map['dataList'];
+      dataList.add(toMap());
       
       DataModelShare updateData = DataModelShare(datetime,dataList);
       FirebaseFirestore.instance
@@ -80,7 +79,7 @@ class UnitData {
         .update(updateData.updateToJson());
     // その日の初めてのデータなら新規登録
     } else {
-      List<dynamic> dataList = [this];
+      List<dynamic> dataList = [toMap()];
       DataModelShare newData = DataModelShare(datetime, dataList);
       FirebaseFirestore.instance
         .collection(Const.collectionName)

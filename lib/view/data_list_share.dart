@@ -42,30 +42,32 @@ class _DataListShare extends State<DataListShare> {
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
               List<dynamic> person = data['dataList'];
+              String datetime = data['dateTime'];
               return ListView.builder(
+                shrinkWrap: true,
+                itemCount: person.length + 1,
                 itemBuilder: (BuildContext context, int index) {
-                  /*
                   if (index == 0) {
-                    return Text(data['dateTime']);
+                    return Text(datetime);
                   }
-                  */
                   return Dismissible(
                     key: Key(person.toString()),
                     onDismissed: (DismissDirection direction) {
                       setState(() {
-                        person.removeAt(index);
-                        deleteData('2023-07-19', person);
+                        person.removeAt(index - 1);
+                        deleteData(datetime, person);
                       });
                     },
                     child: ListTile(
-                      title: Text(person[index]['name']),
-                      subtitle: Text(person[index]['count']),
-                      leading: Text(person[index]['store'])
+                      title: Text(person[index - 1]['name']),
+                      subtitle: Text(person[index - 1]['count']),
+                      leading: Text(person[index - 1]['store'])
                     ),
                   );
                 },
               );
-            }).toList());
+            }).toList(),
+          );
         },
       ),
       ],

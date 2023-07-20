@@ -152,7 +152,7 @@ class _AddItemPageShareState extends State<AddItemPageShare> {
 
   void _saved() async {
     UnitData data = UnitData(
-      datetime: DateFormat('yyyy-mm-dd').format(DateTime.now()),
+      datetime: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       name: name,
       cost: cost,
       count: count,
