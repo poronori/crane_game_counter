@@ -40,9 +40,10 @@ class _DataListShare extends State<DataListShare> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text('Loading');
           }
+          List<DocumentSnapshot> documents = List.from(snapshot.data!.docs.reversed);
           return Column(
             // DBのドキュメントを全て読み込む
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            children: documents.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
               List<dynamic> item = data['dataList'] ?? []; // 日付毎のデータリスト
