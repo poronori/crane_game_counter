@@ -40,17 +40,20 @@ class _DataListShare extends State<DataListShare> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Text('Loading');
           }
+          // 新しい順に並び替え
           List<DocumentSnapshot> documents = List.from(snapshot.data!.docs.reversed);
           return Column(
             // DBのドキュメントを全て読み込む
             children: documents.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-              List<dynamic> item = data['dataList'] ?? []; // 日付毎のデータリスト
-              if (item.isEmpty) {
+              List<dynamic> items = data['dataList'] ?? []; // 日付毎のデータリスト（データ操作用）
+              if (items.isEmpty) {
                 print('データなし');
                 return const SizedBox();
               }
+              // 新しい順に並び替え(表示用)
+              List<dynamic> item = List.from(items.reversed);
               String date = data['dateTime'] ?? "なし"; // 日付
               return Column(
                 children: [
@@ -84,8 +87,8 @@ class _DataListShare extends State<DataListShare> {
                         key: UniqueKey(),
                         onDismissed: (DismissDirection direction) {
                           setState(() {
-                            item.remove(unit);
-                            deleteData(date, item);
+                            items.remove(unit);
+                            deleteData(date, items);
                           });
                         },
 
