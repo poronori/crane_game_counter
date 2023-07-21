@@ -182,11 +182,20 @@ class _DataListShare extends State<DataListShare> {
     return person;
   }
 
+  // データ削除処理
   deleteData(String date, List<dynamic> person) {
-    DataModelShare updateData = DataModelShare(date, person);
-    FirebaseFirestore.instance
+    // 最後の一つだった場合はドキュメントごと削除
+    if (person.isEmpty) {
+      FirebaseFirestore.instance
+        .collection(Const.collectionName)
+        .doc(date)
+        .delete();
+    } else {
+      DataModelShare updateData = DataModelShare(date, person);
+      FirebaseFirestore.instance
         .collection(Const.collectionName)
         .doc(date)
         .update(updateData.updateToJson());
+    }
   }
 }
