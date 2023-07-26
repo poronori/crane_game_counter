@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../model/constants.dart';
 import '../model/data_model_share.dart';
+import 'edit_item_page.dart';
 
 class DataListShare extends StatefulWidget {
   const DataListShare({Key? key}) : super(key: key);
@@ -55,6 +56,7 @@ class _DataListShare extends State<DataListShare> {
               // 新しい順に並び替え(表示用)
               List<dynamic> item = List.from(items.reversed);
               String date = data['dateTime'] ?? "なし"; // 日付
+              int index = 0;
               return Column(
                 children: [
                   Container(
@@ -82,6 +84,17 @@ class _DataListShare extends State<DataListShare> {
                       _cost = _cost.isEmpty ? '0' : _cost;
                       _amount =
                           (int.parse(_cost) * int.parse(_count)).toString();
+                      // 編集用
+                      UnitData editData = UnitData(
+                        datetime: date,
+                        name: _name,
+                        cost: _cost,
+                        count: _count,
+                        store: _store,
+                      );
+                      // リストの位置（反転しているので最後からデクリメントしていく）
+                      index = index + 1;
+                      int itemIndex = item.length - index;
                       // スライドで削除
                       return Dismissible(
                         key: UniqueKey(),
@@ -161,6 +174,27 @@ class _DataListShare extends State<DataListShare> {
                                 style: const TextStyle(fontSize: 30),
                               ),
                             ),
+                            onTap: () async {
+                              // 編集後のデータを受け取る
+                              UnitData? editResult = await showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+                                ), 
+                                builder: (context) => EditItemPage(data: editData),
+                              );
+                              if (editResult != null) {
+                                if (date != editResult.datetime) {
+                                  editResult.insertData();
+                                  items.remove(unit);
+                                  deleteData(date, items);
+                                } else {
+                                  items[itemIndex] = editResult.toMap();
+                                  updateData(date, items);
+                                }
+                              }
+                            },
                           ),
                         ),
                       );
@@ -201,5 +235,14 @@ class _DataListShare extends State<DataListShare> {
         .doc(date)
         .update(updateData.updateToJson());
     }
+  }
+
+    // データ更新処理
+  updateData(String date, List<dynamic> person) {
+    DataModelShare updateData = DataModelShare(date, person);
+    FirebaseFirestore.instance
+      .collection(Const.collectionName)
+      .doc(date)
+      .update(updateData.updateToJson());
   }
 }
