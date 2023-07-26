@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 import '../model/data_model_share.dart';
 
 class EditItemPage extends StatefulWidget {
-
   UnitData data;
   EditItemPage({super.key, required this.data});
 
@@ -16,7 +15,6 @@ class EditItemPage extends StatefulWidget {
 }
 
 class _EditItemPageState extends State<EditItemPage> {
-
   String _date = '';
   String _storeName = '';
   String _name = '';
@@ -85,11 +83,11 @@ class _EditItemPageState extends State<EditItemPage> {
             ),
           ),
           Expanded(
-            child: Form (
+            child: Form(
               key: _formKey,
               child: SingleChildScrollView(
                 controller: _scrollController,
-                child: Container (
+                child: Container(
                   // キーボード分上げる
                   margin: const EdgeInsets.all(10),
                   padding: EdgeInsets.only(bottom: keyboardHeight),

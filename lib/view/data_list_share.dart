@@ -42,13 +42,15 @@ class _DataListShare extends State<DataListShare> {
             return const Text('Loading');
           }
           // 新しい順に並び替え
-          List<DocumentSnapshot> documents = List.from(snapshot.data!.docs.reversed);
+          List<DocumentSnapshot> documents =
+              List.from(snapshot.data!.docs.reversed);
           return Column(
             // DBのドキュメントを全て読み込む
             children: documents.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
                   document.data()! as Map<String, dynamic>;
-              List<dynamic> items = data['dataList'] ?? []; // 日付毎のデータリスト（データ操作用）
+              List<dynamic> items =
+                  data['dataList'] ?? []; // 日付毎のデータリスト（データ操作用）
               if (items.isEmpty) {
                 print('データなし');
                 return const SizedBox();
@@ -77,141 +79,145 @@ class _DataListShare extends State<DataListShare> {
                   Stack(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(top:20),
+                        margin: const EdgeInsets.only(top: 20),
                         child: Column(
-                        // 日付毎のデータリストをループして表示する
-                        children: item.map((dynamic unit) {
-                          _name = unit['name'] ?? '名前なし';
-                          _cost = unit['cost'] ?? '0';
-                          _count = unit['count'] ?? '0';
-                          _store = unit['store'] ?? '不明';
-                          _count = _count.isEmpty ? '0' : _count;
-                          _cost = _cost.isEmpty ? '0' : _cost;
-                          _amount =
-                              (int.parse(_cost) * int.parse(_count)).toString();
-                          dateAmount += int.parse(_amount);
-                          // 編集用
-                          UnitData editData = UnitData(
-                            datetime: date,
-                            name: _name,
-                            cost: _cost,
-                            count: _count,
-                            store: _store,
-                          );
-                          // リストの位置（反転しているので最後からデクリメントしていく）
-                          index = index + 1;
-                          int itemIndex = item.length - index;
-                          // スライドで削除
-                          return Dismissible(
-                            key: UniqueKey(),
-                            onDismissed: (DismissDirection direction) {
-                              setState(() {
-                                items.remove(unit);
-                                deleteData(date, items);
-                              });
-                            },
-                                        
-                            // 削除時の確認ダイアログ
-                            confirmDismiss: (direction) async {
-                              return showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CupertinoAlertDialog(
-                                      title: const Text("確認"),
-                                      content: const Text("スワイプしたデータを削除します"),
-                                      actions: <Widget>[
-                                        CupertinoDialogAction(
-                                          isDestructiveAction: true,
-                                          onPressed: () {
-                                            Navigator.of(context).pop(false);
-                                          },
-                                          child: const Text('キャンセル'),
-                                        ),
-                                        CupertinoDialogAction(
-                                          onPressed: () {
-                                            Navigator.of(context).pop(true);
-                                          },
-                                          child: const Text('OK'),
-                                        ),
-                                      ]);
-                                },
-                              );
-                            },
-                                        
-                            // 表示項目
-                            child: Card(
-                              child: ListTile(
-                                // 景品名
-                                title: Text(
-                                  _name, // nullの場合は空文字
-                                  style: const TextStyle(fontSize: 30),
-                                  overflow: TextOverflow.ellipsis, // 名前が長すぎる場合は切る
-                                ),
-                                        
-                                // 店名、プレイ料金、手数
-                                subtitle: Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 80,
-                                      child: Text(_store,
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                    Container(
-                                      width: 40,
-                                      alignment: Alignment.centerRight,
-                                      child: Text('$_cost円',
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                    Container(
-                                      width: 40,
-                                      alignment: Alignment.centerRight,
-                                      child: Text('$_count手',
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                  ],
-                                ),
-                                        
-                                // 合計金額
-                                trailing: Container(
-                                  width: 100,
-                                  alignment: Alignment.centerRight, // 右寄せ
-                                  child: Text(
-                                    '$_amount円',
-                                    style: const TextStyle(fontSize: 30),
-                                  ),
-                                ),
-                                onTap: () async {
-                                  // 編集後のデータを受け取る
-                                  UnitData? editResult = await showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-                                    ), 
-                                    builder: (context) => EditItemPage(data: editData),
-                                  );
-                                  if (editResult != null) {
-                                    if (date != editResult.datetime) {
-                                      editResult.insertData();
-                                      items.remove(unit);
-                                      deleteData(date, items);
-                                    } else {
-                                      items[itemIndex] = editResult.toMap();
-                                      updateData(date, items);
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                          // 日付毎のデータリストをループして表示する
+                          children: item.map((dynamic unit) {
+                            _name = unit['name'] ?? '名前なし';
+                            _cost = unit['cost'] ?? '0';
+                            _count = unit['count'] ?? '0';
+                            _store = unit['store'] ?? '不明';
+                            _count = _count.isEmpty ? '0' : _count;
+                            _cost = _cost.isEmpty ? '0' : _cost;
+                            _amount = (int.parse(_cost) * int.parse(_count))
+                                .toString();
+                            dateAmount += int.parse(_amount);
+                            // 編集用
+                            UnitData editData = UnitData(
+                              datetime: date,
+                              name: _name,
+                              cost: _cost,
+                              count: _count,
+                              store: _store,
+                            );
+                            // リストの位置（反転しているので最後からデクリメントしていく）
+                            index = index + 1;
+                            int itemIndex = item.length - index;
+                            // スライドで削除
+                            return Dismissible(
+                              key: UniqueKey(),
+                              onDismissed: (DismissDirection direction) {
+                                setState(() {
+                                  items.remove(unit);
+                                  deleteData(date, items);
+                                });
+                              },
+
+                              // 削除時の確認ダイアログ
+                              confirmDismiss: (direction) async {
+                                return showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CupertinoAlertDialog(
+                                        title: const Text("確認"),
+                                        content: const Text("スワイプしたデータを削除します"),
+                                        actions: <Widget>[
+                                          CupertinoDialogAction(
+                                            isDestructiveAction: true,
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                            },
+                                            child: const Text('キャンセル'),
                                           ),
+                                          CupertinoDialogAction(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                            },
+                                            child: const Text('OK'),
+                                          ),
+                                        ]);
+                                  },
+                                );
+                              },
+
+                              // 表示項目
+                              child: Card(
+                                child: ListTile(
+                                  // 景品名
+                                  title: Text(
+                                    _name, // nullの場合は空文字
+                                    style: const TextStyle(fontSize: 30),
+                                    overflow:
+                                        TextOverflow.ellipsis, // 名前が長すぎる場合は切る
+                                  ),
+
+                                  // 店名、プレイ料金、手数
+                                  subtitle: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 80,
+                                        child: Text(_store,
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                      Container(
+                                        width: 40,
+                                        alignment: Alignment.centerRight,
+                                        child: Text('$_cost円',
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                      Container(
+                                        width: 40,
+                                        alignment: Alignment.centerRight,
+                                        child: Text('$_count手',
+                                            overflow: TextOverflow.ellipsis),
+                                      ),
+                                    ],
+                                  ),
+
+                                  // 合計金額
+                                  trailing: Container(
+                                    width: 100,
+                                    alignment: Alignment.centerRight, // 右寄せ
+                                    child: Text(
+                                      '$_amount円',
+                                      style: const TextStyle(fontSize: 30),
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    // 編集後のデータを受け取る
+                                    UnitData? editResult =
+                                        await showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(15)),
+                                      ),
+                                      builder: (context) =>
+                                          EditItemPage(data: editData),
+                                    );
+                                    if (editResult != null) {
+                                      if (date != editResult.datetime) {
+                                        editResult.insertData();
+                                        items.remove(unit);
+                                        deleteData(date, items);
+                                      } else {
+                                        items[itemIndex] = editResult.toMap();
+                                        updateData(date, items);
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20),
-                      alignment: Alignment.topRight,
-                      child: Text('合計金額：${dateAmount.toString()} 円'),
-                    ),
+                      Container(
+                        margin: const EdgeInsets.only(right: 20),
+                        alignment: Alignment.topRight,
+                        child: Text('合計金額：${dateAmount.toString()} 円'),
+                      ),
                     ],
                   ),
                 ],
@@ -239,24 +245,24 @@ class _DataListShare extends State<DataListShare> {
     // 最後の一つだった場合はドキュメントごと削除
     if (person.isEmpty) {
       FirebaseFirestore.instance
-        .collection(Const.collectionName)
-        .doc(date)
-        .delete();
+          .collection(Const.collectionName)
+          .doc(date)
+          .delete();
     } else {
       DataModelShare updateData = DataModelShare(date, person);
       FirebaseFirestore.instance
-        .collection(Const.collectionName)
-        .doc(date)
-        .update(updateData.updateToJson());
+          .collection(Const.collectionName)
+          .doc(date)
+          .update(updateData.updateToJson());
     }
   }
 
-    // データ更新処理
+  // データ更新処理
   updateData(String date, List<dynamic> person) {
     DataModelShare updateData = DataModelShare(date, person);
     FirebaseFirestore.instance
-      .collection(Const.collectionName)
-      .doc(date)
-      .update(updateData.updateToJson());
+        .collection(Const.collectionName)
+        .doc(date)
+        .update(updateData.updateToJson());
   }
 }
